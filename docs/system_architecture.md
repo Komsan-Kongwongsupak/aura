@@ -350,4 +350,4 @@ volumes:
 
 *Document last updated:* 2025-10-26
 
-> **Owner:** Champ — ML Lead (Project: AURA)
+> **Owner:** Komsan Kongwongsupak — ML Lead (Project: AURA)
