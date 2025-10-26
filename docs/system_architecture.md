@@ -287,7 +287,7 @@ AURA/
 ### Example `.env.example`
 
 ```env
-POSTGRES_USER=champ
+POSTGRES_USER=komsan
 POSTGRES_PASSWORD=supersecret123
 POSTGRES_DB=ml_project
 POSTGRES_HOST=postgres
