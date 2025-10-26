@@ -255,7 +255,6 @@ flowchart TD
 * `requirements.txt` or `environment.yml`
 * `docker-compose.yml` with Postgres + MinIO definitions
 * `.gitignore`, `.env.example`, and `README.md` starter
-* ADR (`docs/decisions/adr-001-tool-selection.md`)
 
 ---
 
