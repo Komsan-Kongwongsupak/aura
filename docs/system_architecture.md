@@ -347,6 +347,197 @@ volumes:
 
 ---
 
-*Document last updated:* 2025-10-26
+# 🧱 Phase 2+ Additions — Extended Architecture Components
+
+This section documents the planned **Phase 2+ additions** to the AURA system architecture. These enhancements aim to scale the system, improve observability, strengthen compliance, and align with production-grade ML engineering standards.
+
+Each subsection follows the same documentation pattern used in this file:
+
+* **Overview** — what it is and why it matters
+* **Planned Actions** — specific implementation steps
+* **Deliverables** — expected artifacts and outputs
+* **Acceptance Criteria** — success validation criteria
+* **Phase & Priority** — timeline guidance
+
+---
+
+## 1. Feature Store (Feast / PostgreSQL Serving Tables)
+
+**Overview:**
+Introduce a feature store for unified offline and online feature management, preventing feature drift and ensuring consistency between training and inference.
+
+**Planned Actions:**
+
+* Start with PostgreSQL-based serving tables for MVP.
+* Define a consistent schema for feature storage and retrieval.
+* Optionally integrate **Feast** for offline/online feature management.
+* Schedule Prefect flow for periodic feature updates.
+
+**Deliverables:**
+
+* `docs/feature_store.md` (schema + logic)
+* Prefect flow: `prefect_flows/feature_refresh.py`
+* `src/utils/feature_store.py`
+
+**Acceptance Criteria:**
+
+* Features served from PostgreSQL match offline computed versions.
+* Online serving latency < 200 ms (local test).
+
+**Phase & Priority:** Phase 3 — Core (recommended for model deployment).
+
+---
+
+## 2. Artifact Registry & Model Store (MLflow / S3)
+
+**Overview:**
+Centralize experiment tracking and model versioning using **MLflow** and S3 for artifact storage to ensure reproducibility and traceability.
+
+**Planned Actions:**
+
+* Deploy MLflow tracking server locally with SQLite + S3 backend.
+* Integrate MLflow logging in training scripts.
+* Store model artifacts in S3 under `/models/<model_name>/<version>/`.
+* Automate model registration and promotion via Prefect.
+
+**Deliverables:**
+
+* MLflow configuration in `docker-compose.yml`
+* `src/modeling/mlflow_tracker.py`
+* Prefect flow: `prefect_flows/register_and_deploy.py`
+
+**Acceptance Criteria:**
+
+* MLflow tracks all experiment parameters and metrics.
+* Models can be retrieved from S3 for deployment.
+
+**Phase & Priority:** Phase 3 — High (core part of ML lifecycle).
+
+---
+
+## 3. Schema Registry & Data Catalog
+
+**Overview:**
+Implement a lightweight schema validation and data catalog to ensure consistency, discoverability, and audit readiness.
+
+**Planned Actions:**
+
+* Maintain expected dataset schemas in YAML under `docs/schemas/`.
+* Validate incoming data with `pandera` or custom schema validator.
+* Create a `docs/data_catalog.md` documenting all datasets and owners.
+
+**Deliverables:**
+
+* `docs/schemas/*.yaml`
+* `docs/data_catalog.md`
+* `src/ingestion/validators.py`
+
+**Acceptance Criteria:**
+
+* Ingestion fails when schema drift exceeds threshold.
+* All datasets registered in catalog with owners and retention rules.
+
+**Phase & Priority:** Phase 2 — Medium.
+
+---
+
+## 4. Security & Compliance Layer
+
+**Overview:**
+Introduce security, privacy, and compliance measures aligned with SSHE policies, including encryption, IAM, and audit logging.
+
+**Planned Actions:**
+
+* Manage secrets with `.env` for dev and document migration to cloud secret manager.
+* Define DB roles for controlled access.
+* Enable S3 encryption and access logging.
+* Log Prefect runs and store audit trails.
+* Mask PII during ETL.
+
+**Deliverables:**
+
+* `docs/security.md`
+* `db_init/roles.sql`
+* Prefect task: `mask_pii()`
+
+**Acceptance Criteria:**
+
+* No credentials stored in codebase.
+* DB and S3 access logged and restricted by role.
+
+**Phase & Priority:** Phase 2 — Core (compliance requirement).
+
+---
+
+## 5. Alerting & Observability (Prometheus + Grafana)
+
+**Overview:**
+Integrate monitoring and alerting systems to track pipeline health, performance metrics, and trigger notifications on failures or drift.
+
+**Planned Actions:**
+
+* Add Prometheus + Grafana containers for metric collection.
+* Expose metrics from FastAPI and Prefect.
+* Configure dashboards and alerts for failures or accuracy drops.
+
+**Deliverables:**
+
+* `docs/observability.md`
+* Prometheus + Grafana setup in `docker-compose.yml`
+* Metric endpoints in `src/monitoring/prom_client.py`
+
+**Acceptance Criteria:**
+
+* Dashboards show ingestion and model metrics.
+* Alerts triggered for pipeline or model degradation.
+
+**Phase & Priority:** Phase 5 — High (post-deployment monitoring).
+
+---
+
+## 6. Backup & Retention Policies
+
+**Overview:**
+Implement automated backups and data lifecycle policies to support recovery, compliance, and retention regulations.
+
+**Planned Actions:**
+
+* Add S3 lifecycle policy for archiving raw data.
+* Create Prefect flow to perform daily PostgreSQL backups.
+* Document retention rules for each data type.
+
+**Deliverables:**
+
+* `docs/retention_policy.md`
+* `docs/s3_lifecycle.json`
+* Prefect flow: `prefect_flows/db_backup.py`
+
+**Acceptance Criteria:**
+
+* Backups automatically generated and uploaded to S3.
+* Lifecycle rules archive or delete expired data as documented.
+
+**Phase & Priority:** Phase 2–3 — Medium (operational reliability).
+
+---
+
+### ✅ Summary Table
+
+| Component                  | Priority | Phase | Purpose                           |
+| -------------------------- | -------- | ----- | --------------------------------- |
+| Message Bus (Kafka/MQTT)   | Optional | 2     | Real-time streaming ingestion     |
+| Feature Store              | High     | 3     | Unified feature management        |
+| Artifact Registry (MLflow) | High     | 3     | Model versioning & tracking       |
+| Schema Registry & Catalog  | Medium   | 2     | Data consistency & governance     |
+| Security & Compliance      | Core     | 2     | SSHE compliance & data protection |
+| Alerting & Observability   | High     | 5     | Monitoring & alerting             |
+| Backup & Retention         | Medium   | 2–3   | Data reliability & recovery       |
+
+---
+
+These components form the **Phase 2+ scalability and reliability layer** of AURA, enabling the platform to operate with enterprise-grade robustness, compliance, and observability while maintaining modular simplicity for development and experimentation.
+
+
+*Document last updated:* 2025-10-27
 
 > **Owner:** Komsan Kongwongsupak — ML Lead (Project: AURA)
