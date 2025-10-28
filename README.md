@@ -67,13 +67,15 @@ The project follows a modular and extensible ML system design.
 ```bash
 git clone https://github.com/<your-username>/aura-ml-platform.git
 cd aura-ml-platform
-````
+```
 
 ### 2. Create a Python Environment
-
 ```bash
-conda create -n aura python=3.10
+# Recommended (exact Conda reproduction)
+conda env create -f environment.yml
 conda activate aura
+
+# Alternative (simple pip install)
 pip install -r requirements.txt
 ```
 
