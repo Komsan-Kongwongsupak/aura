@@ -1,5 +1,5 @@
-import psycopg2
-from psycopg2 import sql
+import psycopg
+from psycopg import sql
 
 # Connection parameters (use the same as in your .env)
 config = {
@@ -11,7 +11,7 @@ config = {
 }
 
 try:
-    conn = psycopg2.connect(**config)
+    conn = psycopg.connect(**config)
     print("✅ Connected to PostgreSQL successfully!")
 
     with conn.cursor() as cur:
