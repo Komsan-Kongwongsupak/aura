@@ -49,22 +49,22 @@ flowchart TD
     A[IoT / Sensor Streams / External APIs]
   end
 
-  A --> B[Data Ingestion Pipeline (Prefect)]
-  B --> C1[S3 / MinIO (raw & artifacts)]
-  B --> C2[PostgreSQL (processed / feature tables)]
+  A --> B[Data Ingestion Pipeline - Prefect]
+  B --> C1[S3 / MinIO - raw & artifacts]
+  B --> C2[PostgreSQL - processed & feature tables]
 
-  C1 --> D[ML Pipeline<br/>(ETL → Feature Eng → Train → Eval)]
+  C1 --> D[ML Pipeline\nETL → Feature Eng → Train → Eval]
   C2 --> D
-  D --> E[Feature Store (Feast) / Serving Tables]
-  D --> F[Model Registry / Artifacts (MLflow / S3)]
-  F --> G[FastAPI Model Deployment<br/>(Docker / Container)]
+  D --> E[Feature Store - Feast / Serving Tables]
+  D --> F[Model Registry / Artifacts - MLflow / S3]
+  F --> G[FastAPI Model Deployment\nDocker / Container]
   G --> H[Consumers / Business Apps / Dashboards]
 
   subgraph Ops
-    I[Monitoring & Retraining (Prefect + MLflow)]
-    J[Observability (Prometheus + Grafana)]
-    K[Alerting (Slack / Email)]
-    L[Security & Governance<br/>(Secrets, IAM, Audit)]
+    I[Monitoring & Retraining - Prefect + MLflow]
+    J[Observability - Prometheus + Grafana]
+    K[Alerting - Slack / Email]
+    L[Security & Governance\nSecrets, IAM, Audit]
     M[Schema Registry / Data Catalog]
   end
 
