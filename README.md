@@ -61,6 +61,19 @@ The project follows a modular and extensible ML system design.
 
 ---
 
+## 📊 Dataset
+
+This project uses the [CMAPSS Jet Engine Simulated Data](https://data.nasa.gov/dataset/cmapss-jet-engine-simulated-data) provided by NASA.  
+The dataset contains multivariate time-series sensor readings from simulated jet engines under various operating conditions and fault modes.  
+It is commonly used for **predictive maintenance** and **remaining useful life (RUL)** prediction research.
+
+For this project:
+- The raw data is ingested into **MinIO (S3-compatible)** as CSV files.
+- Processed and feature-engineered data is stored in **PostgreSQL**.
+- The dataset is used to train ML models for **early fault detection and predictive maintenance** tasks.
+
+---
+
 ## ⚙️ Setup Instructions
 
 ### 1. Clone the Repository
