@@ -90,6 +90,23 @@ flowchart TD
 * **What:** Simulated or real IoT sensors, telemetry logs, maintenance records, external APIs.
 * **Role:** Provide structured sensor time series and unstructured logs/reports.
 
+**Overview:**  
+The system uses the [CMAPSS Jet Engine Simulated Dataset](https://data.nasa.gov/dataset/cmapss-jet-engine-simulated-data) as the primary input. This dataset contains simulated sensor readings from aircraft engines and is used to develop predictive maintenance models.
+
+**Planned Actions:**  
+- Download and store the dataset in a structured folder (e.g., `data/raw/`).
+- Create automated ingestion scripts that upload the files into **MinIO (S3-compatible)**.
+- Log metadata (filename, timestamp, dataset version) into **PostgreSQL** for governance.
+
+**Deliverables:**  
+- Verified and reproducible ingestion of the CMAPSS dataset.
+- Metadata tracking in database and data catalog.
+
+**Acceptance Criteria:**  
+- Dataset successfully uploaded and accessible via API.
+- Schema registered and validated.
+
+
 ### Data Ingestion (Prefect)
 
 * **What:** Orchestrated ETL flows.
