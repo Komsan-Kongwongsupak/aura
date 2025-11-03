@@ -1,0 +1,314 @@
+# Schema and validation specification for the `engine_cycles` table (AURA project)
+# Includes column descriptions, data types, and validation constraints.
+
+table: engine_cycles
+version: v1
+description: >
+  Per-cycle telemetry records from CMAPSS-like datasets. Each row represents one
+  cycle reading for an engine (series). Designed for ingestion validation and
+  documentation.
+
+columns:
+  - name: cycle_id
+    postgres_type: BIGSERIAL
+    pandas_type: int
+    description: Surrogate primary key for the cycle row.
+    nullable: false
+    constraints: []
+
+  - name: engine_id
+    postgres_type: INTEGER
+    pandas_type: int
+    description: Foreign key referencing engines.engine_id.
+    nullable: false
+    constraints:
+      - name: positive
+        check: ">= 1"
+
+  - name: cycle_number
+    postgres_type: INTEGER
+    pandas_type: int
+    description: The cycle index (1..N) for this engine. Monotonic increasing per engine.
+    nullable: false
+    constraints:
+      - name: positive
+        check: "> 0"
+
+  - name: ingested_at
+    postgres_type: TIMESTAMP WITH TIME ZONE
+    pandas_type: datetime
+    description: Timestamp when this row was ingested into the system.
+    nullable: false
+    constraints:
+      - name: recent_timestamp
+        check: "is not null"
+
+  - name: setting_1
+    postgres_type: REAL
+    pandas_type: float
+    description: Operational setting 1 from dataset (domain-specific).
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: setting_2
+    postgres_type: REAL
+    pandas_type: float
+    description: Operational setting 2 from dataset (domain-specific).
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: setting_3
+    postgres_type: REAL
+    pandas_type: float
+    description: Operational setting 3 from dataset (domain-specific).
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_1
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 1. Domain-dependent units; used as model features.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_2
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 2.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_3
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 3.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_4
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 4.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_5
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 5.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_6
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 6.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_7
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 7.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_8
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 8.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_9
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 9.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_10
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 10.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_11
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 11.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_12
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 12.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_13
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 13.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_14
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 14.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_15
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 15.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_16
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 16.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_17
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 17.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_18
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 18.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_19
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 19.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_20
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 20.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: sensor_21
+    postgres_type: REAL
+    pandas_type: float
+    description: Sensor reading 21.
+    nullable: true
+    constraints:
+      - name: finite
+        check: "isfinite"
+
+  - name: rul
+    postgres_type: INTEGER
+    pandas_type: int
+    description: Remaining Useful Life (label). Available in training sets; may be NULL for test sets.
+    nullable: true
+    constraints:
+      - name: non_negative
+        check: ">= 0"
+
+  - name: source_file
+    postgres_type: TEXT
+    pandas_type: object
+    description: Origin filename or S3 path where the raw row came from.
+    nullable: true
+    constraints: []
+
+notes: |
+  - Sensors and settings are kept as explicit columns (not JSON) to simplify feature engineering and SQL queries.
+  - `rul` may be null for certain dataset splits (e.g., test) — treat accordingly in pipelines.
+  - Keep the YAML minimal and avoid overly-strict domain ranges until you inspect dataset statistics; generic "finite" checks are safe.
+
+pandera_example: |
+  import pandera as pa
+  from pandera import Column, DataFrameSchema, Check
+
+  schema = DataFrameSchema({
+      "engine_id": Column(int, Check.ge(1)),
+      "cycle_number": Column(int, Check.gt(0)),
+      "ingested_at": Column(pa.DateTime),
+      "setting_1": Column(float, Check(lambda s: s.notna().all() or s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_1": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_2": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_3": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_4": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_5": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_6": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_7": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_8": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_9": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_10": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_11": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_12": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_13": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_14": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_15": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_16": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_17": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_18": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_19": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_20": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "sensor_21": Column(float, Check(lambda s: s.apply(lambda x: float(x) == float(x)).all() if s.notna().any() else True)),
+      "rul": Column(int, nullable=True, checks=Check.ge(0))
+  })
