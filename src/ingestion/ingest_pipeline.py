@@ -25,6 +25,12 @@ def validate(df):
         raise
 
 @task
+def compute_rul_train(df):
+    df = pd.merge(df, df.groupby("engine_id").agg(last_cycle_number=("cycle_number", "max")), on="engine_id", how="left")
+    df["rul"] = df["last_cycle_number"] - df["cycle_number"]
+    return df.drop("last_cycle_number", axis=1)
+
+@task
 def load_to_postgres(df):
     engine = create_engine(os.getenv("POSTGRES_URL"))
     df.to_sql("telemetry", engine, if_exists="append", index=False)
