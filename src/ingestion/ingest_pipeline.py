@@ -31,7 +31,7 @@ def compute_rul_train(df):
     return df.drop("last_cycle_number", axis=1)
 
 @task
-def load_to_postgres(df):
+def load_to_postgres(df, dataset_id):
     engine = create_engine(os.getenv("POSTGRES_URL"))
     df.to_sql("telemetry", engine, if_exists="append", index=False)
 
