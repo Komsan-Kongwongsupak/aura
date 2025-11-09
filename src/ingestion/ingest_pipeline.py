@@ -1,7 +1,8 @@
-from prefect import flow, task
+from prefect import flow, task, get_run_logger
 import pandas as pd
 from sqlalchemy import create_engine
 import boto3, os, io
+from src.ingestion.validators import validate_dataframe_from_yaml
 
 @task
 def extract(filepath):
@@ -10,8 +11,18 @@ def extract(filepath):
 
 @task
 def validate(df):
-    assert "temperature" in df.columns
-    return df
+    logger = get_run_logger()
+    try:
+        # try to coerce / validate
+        validated = validate_dataframe_from_yaml(df, SCHEMA_PATH)
+        logger.info(f"Validation passed: {len(validated)} rows.")
+        return validated
+    except Exception as e:
+        # Pandera raises SchemaError with a detailed report; log and re-raise
+        logger.error("Validation failed: %s", e)
+        # Optionally: save the failing dataframe sample for debugging
+        df.head(50).to_csv("data/failed_sample.csv", index=False)
+        raise
 
 @task
 def load_to_postgres(df):
