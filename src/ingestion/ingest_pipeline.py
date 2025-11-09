@@ -4,8 +4,8 @@ from sqlalchemy import create_engine
 import boto3, os, io
 
 @task
-def extract():
-    df = pd.read_csv("data/raw/sensor_data.csv")
+def extract(filepath):
+    df = pd.read_csv(filepath)
     return df
 
 @task
