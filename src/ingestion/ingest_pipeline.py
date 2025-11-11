@@ -1,5 +1,6 @@
 from prefect import flow, task, get_run_logger
 import pandas as pd
+from datetime import datetime
 from sqlalchemy import create_engine
 import boto3, os, io, sys
 from src.ingestion.validators import validate_dataframe_from_yaml
@@ -14,6 +15,11 @@ def extract(filepath, data_type, rul_path):
     columns = [col_engid, col_cycno] + cols_setting + cols_sensor + cols_placeholder
 
     df = pd.read_table(filepath, sep=" ", header=None, names=columns).drop(cols_placeholder, axis=1)
+    if data_type == "train":
+        df = pd.merge(df, df.groupby("engine_id").agg(last_cycle_number=("cycle_number", "max")), on="engine_id", how="left")
+        df["rul"] = df["last_cycle_number"] - df["cycle_number"]
+        
+    df["ingested_at"] = pd.to_datetime(datetime.now(), errors="coerce")
     return df
 
 @task
