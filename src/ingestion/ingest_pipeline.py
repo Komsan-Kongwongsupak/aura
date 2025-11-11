@@ -6,7 +6,14 @@ from src.ingestion.validators import validate_dataframe_from_yaml
 
 @task
 def extract(filepath, data_type):
-    df = pd.read_csv(filepath)
+    col_engid = "engine_id"
+    col_cycno = "cycle_number"
+    cols_setting = [f"setting_{i}" for i in range(1, 4)]
+    cols_sensor = [f"sensor_{i}" for i in range(1, 22)]
+    cols_placeholder = ["empty_1", "empty_2"]
+    columns = [col_engid, col_cycno] + cols_setting + cols_sensor + cols_placeholder
+    
+    df = pd.read_table(filepath, sep=" ", header=None, names=columns).drop(cols_placeholder, axis=1)
     return df
 
 @task
