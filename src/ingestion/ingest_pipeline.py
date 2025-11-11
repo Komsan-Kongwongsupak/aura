@@ -5,14 +5,14 @@ import boto3, os, io, sys
 from src.ingestion.validators import validate_dataframe_from_yaml
 
 @task
-def extract(filepath, data_type):
+def extract(filepath, data_type, rul_path):
     col_engid = "engine_id"
     col_cycno = "cycle_number"
     cols_setting = [f"setting_{i}" for i in range(1, 4)]
     cols_sensor = [f"sensor_{i}" for i in range(1, 22)]
     cols_placeholder = ["empty_1", "empty_2"]
     columns = [col_engid, col_cycno] + cols_setting + cols_sensor + cols_placeholder
-    
+
     df = pd.read_table(filepath, sep=" ", header=None, names=columns).drop(cols_placeholder, axis=1)
     return df
 
@@ -55,11 +55,12 @@ def store_raw_in_minio(df):
     s3.put_object(Bucket=os.getenv("S3_BUCKET"), Key="raw/sensor_data.csv", Body=csv_buffer.getvalue())
 
 @flow
-def ingest_pipeline(name, source_url, data_type):
-    df = extract(source_url, data_type)
+def ingest_pipeline(name, source_url, data_type, rul_path=None):
+    df = extract(source_url, data_type, rul_path)
     df = validate(df)
     load_to_postgres(df)
     store_raw_in_minio(df)
 
 if __name__ == "__main__":
-    ingest_pipeline(sys.argv[1], sys.argv[2], sys.argv[3])
+    args = sys.argv[1:]
+    ingest_pipeline(*args)
