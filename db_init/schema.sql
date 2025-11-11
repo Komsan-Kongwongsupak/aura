@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS datasets (
   name TEXT NOT NULL,
   source_url TEXT,
   s3_path TEXT,
+  data_type TEXT CHECK (data_type IN ('train', 'test', 'inference')),
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
