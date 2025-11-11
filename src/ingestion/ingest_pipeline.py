@@ -1,11 +1,11 @@
 from prefect import flow, task, get_run_logger
 import pandas as pd
 from sqlalchemy import create_engine
-import boto3, os, io
+import boto3, os, io, sys
 from src.ingestion.validators import validate_dataframe_from_yaml
 
 @task
-def extract(filepath):
+def extract(filepath, data_type):
     df = pd.read_csv(filepath)
     return df
 
@@ -48,11 +48,11 @@ def store_raw_in_minio(df):
     s3.put_object(Bucket=os.getenv("S3_BUCKET"), Key="raw/sensor_data.csv", Body=csv_buffer.getvalue())
 
 @flow
-def ingest_pipeline():
-    df = extract()
+def ingest_pipeline(name, source_url, data_type):
+    df = extract(source_url, data_type)
     df = validate(df)
     load_to_postgres(df)
     store_raw_in_minio(df)
 
 if __name__ == "__main__":
-    ingest_pipeline()
+    ingest_pipeline(sys.argv[1], sys.argv[2], sys.argv[3])
