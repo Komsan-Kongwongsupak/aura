@@ -1,12 +1,13 @@
 from prefect import flow, task, get_run_logger
+import numpy as np
 import pandas as pd
 from datetime import datetime
 from sqlalchemy import create_engine
-import boto3, os, io, sys
+import boto3, os, io, sys, json
 from src.ingestion.validators import validate_dataframe_from_yaml
 
 @task
-def extract(filepath, data_type, rul_path):
+def extract(filepath, data_type, rul_path=None):
     col_engid = "engine_id"
     col_cycno = "cycle_number"
     cols_setting = [f"setting_{i}" for i in range(1, 4)]
@@ -15,11 +16,29 @@ def extract(filepath, data_type, rul_path):
     columns = [col_engid, col_cycno] + cols_setting + cols_sensor + cols_placeholder
 
     df = pd.read_table(filepath, sep=" ", header=None, names=columns).drop(cols_placeholder, axis=1)
+    src_file = {"data": filepath}
+
     if data_type == "train":
         df = pd.merge(df, df.groupby("engine_id").agg(last_cycle_number=("cycle_number", "max")), on="engine_id", how="left")
         df["rul"] = df["last_cycle_number"] - df["cycle_number"]
+        df = df.drop("last_cycle_number", axis=1)
+
+    elif data_type == "test":
+        if rul_path is not None:
+            df_rul = pd.read_table(rul_path, header=None, names=["rul_last"])
+            df_rul["engine_id"] = df_rul.index + 1
+            df = pd.merge(df, df_rul, on="engine_id", how="left")
+            df = pd.merge(df, df.groupby("engine_id").agg(last_cycle_number=("cycle_number", "max")), on="engine_id", how="left")
+            df["rul"] = df["rul_last"] + (df["last_cycle_number"] - df["cycle_number"])
+            df = df.drop(["rul_last", "last_cycle_number"], axis=1)
+
+        else:
+            df["rul"] = np.nan
         
+        src_file["rul"] = rul_path
+
     df["ingested_at"] = pd.to_datetime(datetime.now(), errors="coerce")
+    df["source_file"] = json.dumps(src_file)
     return df
 
 @task
