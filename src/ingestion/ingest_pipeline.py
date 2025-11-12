@@ -52,7 +52,7 @@ def validate(df):
     
     sensor_cols = [c for c in df.columns if c.startswith("sensor_")]
     df[sensor_cols] = df[sensor_cols].apply(pd.to_numeric, errors="coerce")
-    return df
+    return df[[col_engid, col_cycno, "ingested_at"] + cols_setting + cols_sensor + ["rul", "source_file"]]
 
 @task
 def load_to_postgres(df, dataset_id):
