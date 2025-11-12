@@ -4,7 +4,6 @@ import pandas as pd
 from datetime import datetime
 from sqlalchemy import create_engine
 import boto3, os, io, sys, json
-from src.ingestion.validators import validate_dataframe_from_yaml
 
 col_engid = "engine_id"
 col_cycno = "cycle_number"
