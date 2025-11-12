@@ -6,12 +6,13 @@ from sqlalchemy import create_engine
 import boto3, os, io, sys, json
 from src.ingestion.validators import validate_dataframe_from_yaml
 
+col_engid = "engine_id"
+col_cycno = "cycle_number"
+cols_setting = [f"setting_{i}" for i in range(1, 4)]
+cols_sensor = [f"sensor_{i}" for i in range(1, 22)]
+
 @task
 def extract(filepath, data_type, rul_path=None):
-    col_engid = "engine_id"
-    col_cycno = "cycle_number"
-    cols_setting = [f"setting_{i}" for i in range(1, 4)]
-    cols_sensor = [f"sensor_{i}" for i in range(1, 22)]
     cols_placeholder = ["empty_1", "empty_2"]
     columns = [col_engid, col_cycno] + cols_setting + cols_sensor + cols_placeholder
 
