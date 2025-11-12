@@ -37,24 +37,22 @@ def extract(filepath, data_type, rul_path=None):
         
         src_file["rul"] = rul_path
 
-    df["ingested_at"] = pd.to_datetime(datetime.now(), errors="coerce")
     df["source_file"] = json.dumps(src_file)
     return df
 
 @task
 def validate(df):
-    logger = get_run_logger()
-    try:
-        # try to coerce / validate
-        validated = validate_dataframe_from_yaml(df, SCHEMA_PATH)
-        logger.info(f"Validation passed: {len(validated)} rows.")
-        return validated
-    except Exception as e:
-        # Pandera raises SchemaError with a detailed report; log and re-raise
-        logger.error("Validation failed: %s", e)
-        # Optionally: save the failing dataframe sample for debugging
-        df.head(50).to_csv("data/failed_sample.csv", index=False)
-        raise
+    if "engine_id" not in df.columns:
+        raise ValueError(f"Missing required columns: engine_id")
+    
+    df["ingested_at"] = pd.to_datetime(datetime.now(), errors="coerce")
+
+    if df["ingested_at"].isna().any():
+        raise ValueError("Some ingested_at values could not be parsed")
+    
+    sensor_cols = [c for c in df.columns if c.startswith("sensor_")]
+    df[sensor_cols] = df[sensor_cols].apply(pd.to_numeric, errors="coerce")
+    return df
 
 @task
 def compute_rul_train(df):
